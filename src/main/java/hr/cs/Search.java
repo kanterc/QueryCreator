@@ -22,7 +22,7 @@ public class Search {
         String query = "";
         parser.loadInput(terms, location, status, sourcedBy);
         parser.parseTermsInput();
-        if(!parser.getQueryWhereClause().equals("Error in the search input")){
+        if(!parser.getQueryWhereClause().equals("Error in the search input")) {
             parser.addLocationToQuery();
             parser.addStatusToQuery();
             parser.addSourcedByToQuery();
@@ -31,7 +31,7 @@ public class Search {
             query = parser.getSelectQuery().concat(parser.getQueryWhereClause());
             query = query.concat(";");
         }
-        else{
+        else {
             query = parser.getQueryWhereClause();
         }
         parser.resetVariables();

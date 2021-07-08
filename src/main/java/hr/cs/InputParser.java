@@ -422,7 +422,7 @@ public class InputParser {
             else if(status.equals("do not hire")) {
                 whereClause = whereClause.concat(and+"c.candidate_status_id = 4");
             }
-            else if(status.equals("all") && selectType == 0) { //We have a general search and we should just reset the where clause to not have anything from status
+            else if(status.equals("all") && selectType == 0 && whereClause.equals("where ")) { //We have a general search with no location and we should just reset the where clause to not have anything from status
                 whereClause = "";
             }
         }
