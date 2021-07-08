@@ -1,38 +1,31 @@
 package hr.cs;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 
 @Path("/cs") //cs = candidate search
 public class SearchResource {
     @GET
-    @Path("/{request}")
     @Produces("application/json")
-    public String printHello(@PathParam("request") String request)
+    public Response searchCandidate(@DefaultValue("") @QueryParam("terms") String input, @QueryParam("show") String s, @QueryParam("page") int page,
+                                    @DefaultValue("") @QueryParam("location") String loc, @DefaultValue("") @QueryParam("sourceby") String uid)
     {
-        String[] terms = request.split("&");
-        Search s = new Search();
+        Search search = new Search();
         String searchInput = null;
-        String show = terms[1].substring(5);
+        String show = s;
         String location = null;
         String sourcedBy = null;
         String query = "";
-
-        if(!terms[0].substring(6).equals(""))
-        {
-            searchInput = terms[0].substring(6);
+        if(!input.equals("")) {
+            searchInput = input;
         }
-        if(!terms[3].substring(9).equals(""))
-        {
-            location = terms[3].substring(9);
+        if(!loc.equals("")) {
+            location = loc;
         }
-        if(show.equals("Yours"))
-        {
-            sourcedBy = terms[4].substring(9);
+        if(!uid.equals("")) {
+            sourcedBy = uid;
         }
-        query = s.createSearchQuery(searchInput, location, show, sourcedBy);
-        return query;
+        query = search.createSearchQuery(searchInput, location, show, sourcedBy);
+        return Response.status(200).entity(query).build();
     }
 }
