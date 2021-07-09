@@ -7,8 +7,9 @@ import javax.ws.rs.core.Response;
 public class SearchResource {
     @GET
     @Produces("application/json")
-    public Response searchCandidate(@DefaultValue("") @QueryParam("terms") String input, @QueryParam("status") String s, @QueryParam("page") int page,
-                                    @DefaultValue("") @QueryParam("location") String loc, @DefaultValue("") @QueryParam("sourceby") String uid)
+    public Response searchCandidate(@DefaultValue("") @QueryParam("terms") String input, @DefaultValue("") @QueryParam("status") String s, @DefaultValue("") @QueryParam("show") String s2,
+                                    @QueryParam("page") int page, @DefaultValue("") @QueryParam("location") String loc,
+                                    @DefaultValue("") @QueryParam("sourceby") String uid)
     {
         Search search = new Search();
         String searchInput = null;
@@ -21,6 +22,9 @@ public class SearchResource {
         }
         if(!loc.equals("")) {
             location = loc;
+        }
+        if(show.equals("")) {
+            show = s2;
         }
         if(!uid.equals("")) {
             sourcedBy = uid;
