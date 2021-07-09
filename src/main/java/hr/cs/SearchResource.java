@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 public class SearchResource {
     @GET
     @Produces("application/json")
-    public Response searchCandidate(@DefaultValue("") @QueryParam("terms") String input, @QueryParam("show") String s, @QueryParam("page") int page,
+    public Response searchCandidate(@DefaultValue("") @QueryParam("terms") String input, @QueryParam("status") String s, @QueryParam("page") int page,
                                     @DefaultValue("") @QueryParam("location") String loc, @DefaultValue("") @QueryParam("sourceby") String uid)
     {
         Search search = new Search();
