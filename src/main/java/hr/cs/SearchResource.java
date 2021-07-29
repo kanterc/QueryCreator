@@ -30,6 +30,7 @@ public class SearchResource {
             sourcedBy = uid;
         }
         query = search.createSearchQuery(searchInput, location, show, sourcedBy);
+        //I need to add an if where it validates if it is a true query it returns a 200 if its an error it returns a 204 with an empty query or general search query
         return Response.status(200).entity(query).build();
     }
 }

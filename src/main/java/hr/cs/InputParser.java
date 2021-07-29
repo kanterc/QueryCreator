@@ -183,7 +183,6 @@ public class InputParser {
 
         //Before starting we check if we are looking for a name or an email
         if(input == null) {
-            System.out.println("Entro aqui");
             selectType = 0; //It did not have terms which means it is a general search
         }
         else if(this.input.contains("@"))
@@ -222,7 +221,7 @@ public class InputParser {
                 }
                 else if (character == ')' && !nextWord.equals(""))
                 {
-                    whereClause = whereClause.concat("lower(c.resume_content) like '%" + nextWord.toLowerCase() + "%')");
+                    whereClause = whereClause.concat("lower(c.resume_content) like '% " + nextWord.toLowerCase() + " %')");
                     keywords.add(nextWord);
                     nextWord = "";
                     closingParenthesis--;
@@ -242,7 +241,7 @@ public class InputParser {
                         i = endFlag;
                         if (i == this.input.length() - 1)
                         {
-                            whereClause = whereClause.concat("lower(c.resume_content) like '%" + nextWord.toLowerCase() + "%'");
+                            whereClause = whereClause.concat("lower(c.resume_content) like '% " + nextWord.toLowerCase() + " %'");
                             keywords.add(nextWord);
                             nextWord = "";
                         }
@@ -268,8 +267,7 @@ public class InputParser {
                         {
                             //The user inputted a compound phrase with two or more words without using quotation marks This would be considered an error
                             //This can also be the case that the user is searching for a users name, so the query will be changed to a name search only
-                            //whereClause = "Error in the search input";
-                            //whereClause = "where lower(concat(c.first_name,' ',c.last_name)) like '%"+ this.input.toLowerCase() +"%'";
+
                             whereClause = whereClause.concat("where ");
                             whereClause = whereClause.concat(createNameWhereClause(this.input.toLowerCase()));
                             nameSearch = true;
@@ -284,49 +282,40 @@ public class InputParser {
                         else
                         {
                             whereClause = whereClause.concat("\nand ");
-                            System.out.println("Entro al else del and que puso un and en el query "+i+" "+nextWord);
                             andOr = true;
                         }
                     }
                     else
-                    {
+                    { //In the next two ifs we are checking to see if the next word after the space is AND or OR, if it is not any of those then we consider it is a name
                         if (i + 4 < this.input.length() - 1 && !this.input.substring(i + 1, i + 5).equals("and ") && !this.input.substring(i + 1, i + 4).equals("or ")) {
-                            //The user inputted a compound phrase with two or more words without using quotation marks This would be considered an error
-                            //whereClause = "Error in the search input";
-                            //whereClause = ("where lower(concat(c.first_name,' ',c.last_name)) like '%"+ this.input.toLowerCase() +"%'");
+                            //The user inputted a compound phrase with two or more words without using quotation marks, we will consider it a name to be searched
                             whereClause = "where ";
                             whereClause = whereClause.concat(createNameWhereClause(this.input.toLowerCase()));
                             nameSearch = true;
                             andOr = false;
-                            System.out.println("Entro al and sin nada despues");
                             break;
                         }
                         else if (this.input.length() - 1 < i + 4) {
-                            //The user inputted a compound phrase with two or more words without using quotation marks This would be considered an error
-                            //whereClause = "Error in the search input";
-                            //whereClause = ("where lower(concat(c.first_name,' ',c.last_name)) like '%"+ this.input.toLowerCase() +"%'");
-                            whereClause = whereClause.concat("where ");
+                            //The user inputted a compound phrase with two or more words without using quotation marks, we will consider it a name to be searched
+                            whereClause = "where ";
                             whereClause = whereClause.concat(createNameWhereClause(this.input.toLowerCase()));
                             nameSearch = true;
                             andOr = false;
-                            System.out.println("Entro al an o");
                             break;
                         }
-                        else if(andOr == true)
+                        else if(andOr == true) //This if is in charge to add the 'and' or 'or' to the query
                         {
                             //It found an and or an or and there is a word after it so it will be added to the query
-                            whereClause = whereClause.concat("lower(c.resume_content) like '%" + nextWord.toLowerCase() + "%'");
+                            whereClause = whereClause.concat("lower(c.resume_content) like '% " + nextWord.toLowerCase() + " %'");
                             keywords.add(nextWord);
                             andOr = false;
-                            System.out.println("Entro al else if");
                         }
-                        else
+                        else //This else adds the word that was obtained to the query
                         {
-                            //It found a word before a space so it will be added to the query as a single word search
-                            whereClause = whereClause.concat("lower(c.resume_content) like '%" + nextWord.toLowerCase() + "%'");
+                            //It found a valid word before a space so it will be added to the query as a single word search
+                            whereClause = whereClause.concat("lower(c.resume_content) like '% " + nextWord.toLowerCase() + " %'");
                             keywords.add(nextWord);
                             andOr = false;
-                            System.out.println("Entro al else final de palabra sola valida");
                         }
                     }
                     nextWord = "";
@@ -339,19 +328,17 @@ public class InputParser {
                 {
                     if(andOr == true) { //There was an and/or added in the search string
                         nextWord = nextWord.concat(String.valueOf(character));
-                        whereClause = whereClause.concat("lower(c.resume_content) like '%" + nextWord.toLowerCase() + "%'");
+                        whereClause = whereClause.concat("lower(c.resume_content) like '% " + nextWord.toLowerCase() + " %'");
                         keywords.add(nextWord);
                         andOr = false;
-                        System.out.println("Entro al if del andOr siendo true y que ya esta al final del input");
                     }
                     else
                     {
                         //The user tried to input a compounded word without using quotation marks, it will be considered it is looking for a name or a single word search
                         whereClause = ("where (" + createNameWhereClause(this.input) +
-                                "  or lower(c.resume_content) like '%" + this.input + "%')");
+                                "  or lower(c.resume_content) like '% " + this.input + " %')");
                         nameSearch = true;
                         andOr = false;
-                        System.out.println("Entro al else final donde el user o la cago o anda buscando un name");
                     }
                 }
                 else
